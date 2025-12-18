@@ -1,7 +1,13 @@
-/** @type {import('next').NextConfig} */
+  /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
     domains: ["c.saavncdn.com", "static.saavncdn.com", "www.jiosaavn.com"],
+  },
+
+  webpack: (config) => {
+    // Disable filesystem cache to avoid Windows memory issues
+    config.cache = false;
+    return config;
   },
 };
 

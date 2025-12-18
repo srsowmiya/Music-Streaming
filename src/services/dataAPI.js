@@ -16,12 +16,14 @@ export async function homePageData(language) {
   }
 }
 
+// External Saavn API base URL.
+// If NEXT_PUBLIC_SAAVN_API isn't set, fall back to the public instance used in the README.
+const SAAVN_API_BASE = process.env.NEXT_PUBLIC_SAAVN_API || "https://saavn.dev";
+
 // get song data
 export async function getSongData(id) {
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_SAAVN_API}/api/songs/${id}`
-    );
+    const response = await fetch(`${SAAVN_API_BASE}/api/songs/${id}`);
     const data = await response.json();
     console.log("song data", data);
     return data?.data;
@@ -33,9 +35,7 @@ export async function getSongData(id) {
 // get album data
 export async function getAlbumData(id) {
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_SAAVN_API}/api/albums?id=${id}`
-    );
+    const response = await fetch(`${SAAVN_API_BASE}/api/albums?id=${id}`);
     const data = await response.json();
     return data?.data;
   } catch (error) {
@@ -47,7 +47,7 @@ export async function getAlbumData(id) {
 export async function getplaylistData(id) {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_SAAVN_API}/api/playlists?id=${id}&limit=50`
+      `${SAAVN_API_BASE}/api/playlists?id=${id}&limit=50`
     );
     const data = await response.json();
     return data?.data;
@@ -60,7 +60,7 @@ export async function getplaylistData(id) {
 export async function getlyricsData(id) {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_SAAVN_API}/api/songs/${id}/lyrics`
+      `${SAAVN_API_BASE}/api/songs/${id}/lyrics`
     );
     const data = await response.json();
     return data;
@@ -72,9 +72,7 @@ export async function getlyricsData(id) {
 // get artist data
 export async function getArtistData(id) {
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_SAAVN_API}/api/artists?id=${id}`
-    );
+    const response = await fetch(`${SAAVN_API_BASE}/api/artists?id=${id}`);
     const data = await response.json();
     return data?.data;
   } catch (error) {
@@ -86,7 +84,7 @@ export async function getArtistData(id) {
 export async function getArtistSongs(id, page) {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_SAAVN_API}/api/artists/${id}/songs?page=${page}&`
+      `${SAAVN_API_BASE}/api/artists/${id}/songs?page=${page}&`
     );
     const data = await response.json();
     return data?.data;
@@ -99,7 +97,7 @@ export async function getArtistSongs(id, page) {
 export async function getArtistAlbums(id, page) {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_SAAVN_API}/api/artists/${id}/albums?page=${page}`
+      `${SAAVN_API_BASE}/api/artists/${id}/albums?page=${page}`
     );
     const data = await response.json();
     return data?.data;
@@ -112,7 +110,7 @@ export async function getArtistAlbums(id, page) {
 export async function getSearchedData(query) {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_SAAVN_API}/api/search?query=${query}`
+      `${SAAVN_API_BASE}/api/search?query=${query}`
     );
     const data = await response.json();
     return data?.data;
@@ -198,7 +196,7 @@ export async function sendResetPasswordLink(email) {
 export async function getRecommendedSongs(artistId, songId) {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_SAAVN_API}/api/songs/${songId}/suggestions`
+      `${SAAVN_API_BASE}/api/songs/${songId}/suggestions`
     );
     const data = await response.json();
     return data?.data;

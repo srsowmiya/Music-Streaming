@@ -16,7 +16,7 @@ import FullscreenTrack from "./FullscreenTrack";
 import Lyrics from "./Lyrics";
 import Downloader from "./Downloader";
 import { HiOutlineChevronDown } from "react-icons/hi";
-import { addFavourite, getFavourite } from "@/services/dataAPI";
+import { addFavourite, getFavourite, getSongData } from "@/services/dataAPI";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import FavouriteButton from "./FavouriteButton";
@@ -88,6 +88,40 @@ const MusicPlayer = () => {
       document.title = activeSong?.name;
     }
   }, [activeSong]);
+
+  // Ensure the active song has a playable URL.
+  // Many list endpoints return lightweight song objects without `downloadUrl`.
+  // When that happens, fetch full song details by id and update both `activeSong`
+  // and the current index entry inside `currentSongs`.
+  useEffect(() => {
+    const hydrateActiveSong = async () => {
+      if (!activeSong?.id) return;
+      if (activeSong?.downloadUrl?.length) return;
+
+      try {
+        const data = await getSongData(activeSong.id);
+        const fullSong = data?.[0];
+        if (!fullSong) return;
+
+        const updatedSongs = Array.isArray(currentSongs) ? [...currentSongs] : [];
+        if (updatedSongs[currentIndex]?.id === fullSong.id) {
+          updatedSongs[currentIndex] = fullSong;
+        }
+
+        dispatch(
+          setActiveSong({
+            song: fullSong,
+            data: updatedSongs.length ? updatedSongs : currentSongs,
+            i: currentIndex,
+          })
+        );
+      } catch (e) {
+        console.log("Failed to hydrate active song", e);
+      }
+    };
+
+    hydrateActiveSong();
+  }, [activeSong?.id, currentIndex, currentSongs]);
 
   // off scroll when full screen
   useEffect(() => {
